@@ -42,6 +42,7 @@
   _containerLayer = [CALayer layer];
   _containerLayer.frame = self.bounds;
   self.speed = 0.0;
+
   [self addSublayer:_containerLayer];
   [self _setupFace:_faceModel];
 }
@@ -179,6 +180,7 @@
 - (void)_resetAnimations
 {
   self.speed = 0;
+  self.duration = _faceModel.animationFrameCount / _faceModel.frameRate;
   [self removeAllAnimations];
   for (KFVectorAnimationLayer *sublayer in _containerLayer.sublayers) {
     [sublayer resetAnimations];
@@ -199,7 +201,7 @@
     [self _resetAnimations];
     self.speed = 1.0;
     self.timeOffset = 0.0;
-    self.beginTime = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+    self.beginTime = progress * self.duration;
 }
 
 - (void)resumeAnimation
