@@ -197,11 +197,13 @@
   self.beginTime = 0.0;
 }
 
-- (void)startAnimationFromProgress:(CGFloat)progress{
-    [self _resetAnimations];
+- (void)startAnimationFromProgress:(CGFloat)progress
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    self.speed = 0.0;
+    self.beginTime = CACurrentMediaTime() - (1- progress) * _faceModel.animationFrameCount / _faceModel.frameRate;
     self.speed = 1.0;
-    self.timeOffset = 0.0;
-    self.beginTime = progress * self.duration;
+  });
 }
 
 - (void)resumeAnimation
@@ -227,7 +229,9 @@
 
 - (void)seekToProgress:(CGFloat)progress
 {
-  self.timeOffset = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      self.timeOffset = progress * _faceModel.animationFrameCount / _faceModel.frameRate;
+    });
 }
 
 - (void)layoutSublayers
